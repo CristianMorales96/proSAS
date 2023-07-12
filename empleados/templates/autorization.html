@@ -1,0 +1,72 @@
+{% extends './base.html' %}
+
+{%block title%} staff authorizations {% endblock %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <h2>Autorizaciones de personal</h2>
+        <div class="card">
+            <div class="card-body">
+                <form action="/registrarAutorization/" method="POST">{% csrf_token %}
+                    <div class="form-group">
+                        <input type="time" value="00:00" max="24:00" min="00:00" id="entradaAutorization" name="entradaAutorization" class="form-control"
+                            placeholder="Hora entrada" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="time" value="00:00" max="24:00" min="00:00" id="salidaAutorization" name="salidaAutorization" class="form-control"
+                            placeholder="Hora salida" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="start">Fecha de autorización:</label>
+                        <input type="date" name="trip-start" id="trip-start" value="01-01-2023" min="31-01-2023" max="31-01-2026">
+                    </div>
+                    <div class="form-group">
+                            <select id="txtidEmpleado" name="txtidEmpleado">
+                                {% for st in Staff %}
+                                <option value="{{st.id}}">{{st.nombres}} {{st.apellidos}}</option>
+                                {% endfor %}
+                            </select>
+                    </div>
+                    <div class="form group">
+                        <button type="submit" class="btn btn-success btn-block text-white">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-8 col-xl-8">
+        <h1>Listado de personal</h1>
+        <div class="table-responsive py-2">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Hora entrada</th>
+                        <th>Hora salida</th>
+                        <th>Fecha de ingreso</th>
+                        <th>id de empleado</th>
+                        <th colspan="2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in Autorization %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{a.hora_inicio}}</td>
+                        <td>{{a.hora_final}}</td>
+                        <td>{{a.fecha}}</td>
+                        <td>{{a.id_empleado}}</td>
+                        <td><a href="edicionAutorizacion/{{a.id_empleado}}" class="btn btn-info">Editar</a></td>
+                        <td><a href="eliminarAutorizacion/{{a.id_empleado}}" class="btn btn-danger btnEliminacion">Eliminar</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

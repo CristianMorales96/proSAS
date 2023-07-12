@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from django.http import HttpResponseForbidden
+from datetime import datetime
 
 
 def home(request):
@@ -46,9 +47,8 @@ def editarPersonal(request):
 
     return redirect('/')
 
-@csrf_exempt
+@csrf_exempt #consultaro desde cualquier cliente
 def getMoviments(request):
-    print(request.method)
     if request.method == "GET":
         moviments = Moviment.objects.all()
         data = serializers.serialize('json', moviments)
@@ -65,33 +65,87 @@ def getMoviments(request):
             id_empleado = prueba["id_empleado"]
         except:
             return JsonResponse({"data": "fecha_entrada, fecha_salida, hora_entrada, hora_salida, sentido, id_empleado son obligatorios"})
-        if fecha_entrada == "":
-            return JsonResponse({"data": "fecha de entrada no puede ser vacia"})
         try:
             encontrar = Staff.objects.get(id=id_empleado)
         except:
             return JsonResponse({"data": "Empleado no encontrado"})
         try:
-            autorizacion = Autorization.objects.get(id_empleado=id_empleado)
-        except:
+            autorizacion = Autorization.objects.filter(id_empleado=id_empleado).values()
+            errores = ""
+            encontrado = 0
+            for item in autorizacion:
+                if item["fecha"] == fecha_entrada:
+                    encontrado += 1
+                elif item["fecha"] != fecha_entrada:
+                    errores += "El usuario no se encuentra autorizado para entrar esta fecha"
+                    break
+                if item["fecha"] == fecha_salida:
+                    encontrado += 1
+                elif item["fecha"] != fecha_salida:
+                    errores += "El usuario no se encuentra autorizado para salir esta fecha"
+                    break
+                if item["hora_inicio"] <= hora_entrada:
+                    encontrado += 1
+                elif item["hora_inicio"] > hora_entrada:
+                    errores += "El usuario no se encuentra autorizado para entrar a esta hora"
+                    break
+                if item["hora_final"] >= hora_salida:
+                    encontrado += 1
+                elif item["hora_final"] < hora_salida:
+                    errores += "El usuario no se encuentra autorizado para salir a esta hora"
+                    break
+                if hora_entrada <= "23:59":
+                    encontrado += 1
+                elif hora_entrada > "23:59":
+                    errores += "La hora no es valida"
+                    break
+                if hora_salida <= "23:59":
+                    encontrado += 1
+                elif hora_salida > "23:59":
+                    errores += "La hora no es valida"
+                    break
+                if sentido == "ENTRADA" or sentido == "SALIDA":
+                    encontrado += 1
+                elif sentido != "ENTRADA" and sentido != "SALIDA":
+                    errores += "El sentido debe ser ENTRADA O SALIDA"
+                    break
+
+        except Exception as e:
             return JsonResponse({"data": "El empleado no se encuentra autorizado"})
-        if autorizacion.fecha != fecha_entrada:
-            return JsonResponse({"data": "El usuario no se encuentra autorizado para ingresar esta fecha"})
-        if autorizacion.fecha != fecha_salida:
-            return JsonResponse({"data": "El usuario no se encuentra autorizado para salir esta fecha"})
-        if autorizacion.hora_inicio > hora_entrada:
-            return JsonResponse({"data": "El usuario no se encuentra autorizado para entrar a esta hora"})
-        if autorizacion.hora_final < hora_salida:
-            return JsonResponse({"data": "El usuario no se encuentra autorizado para salir a esta hora"})
-        if hora_entrada > "23:59":
-            return JsonResponse({"data": "La hora no es valida"})
-        if hora_salida > "23:59":
-            return JsonResponse({"data": "La hora no es valida"})
-        if sentido != "ENTRADA" and sentido != "SALIDA":
-            return JsonResponse({"data": "El sentido debe ser ENTRADA O SALIDA"})
+        if errores != "" and encontrado != 8:
+            return JsonResponse({"data": errores})
         moviments = Moviment.objects.create(fecha_entrada = fecha_entrada, fecha_salida = fecha_salida, hora_entrada = hora_entrada,
                                             hora_salida = hora_salida, sentido = sentido, id_empleado = encontrar)
         return JsonResponse({"data": "created"})
     return HttpResponseForbidden()
 
+
+
+def autorizationPersonal(request):
+    autorizationlist = Autorization.objects.all()
+    buscar_empleado = Staff.objects.all()
+    return render(request, "autorization.html", {"Autorization": autorizationlist,
+                                                 "Staff": buscar_empleado})
+
+
+
+
+def registrarAutorization(request):
+    hora_inicio = request.POST["entradaAutorization"]
+    hora_final = request.POST["salidaAutorization"]
+    fecha = request.POST["trip-start"]
+    id_empleado = request.POST["txtidEmpleado"]
+    buscar = Staff.objects.get(id=id_empleado)
+    fecha = datetime.strptime(fecha, "%Y-%m-%d")
+    fecha_formateada = fecha.strftime("%d-%m-%Y").split(" ")[0]
+    print(fecha_formateada)
+
+    autorization = Autorization.objects.create(hora_inicio = hora_inicio, hora_final = hora_final,
+                                               fecha = fecha_formateada, id_empleado = buscar)
+    return redirect('/autorization/')
+
+
+def edicionAutorizacion(request, id):
+    autorization = Autorization.objects.get(id=id)
+    return render(request, "edicionAutorizacion.html", {"autorization": autorization})
 
