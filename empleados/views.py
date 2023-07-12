@@ -74,6 +74,16 @@ def getMoviments(request):
             errores = ""
             encontrado = 0
             for item in autorizacion:
+                if fecha_entrada.count("-") == 2:
+                    encontrado += 1
+                elif fecha_entrada.count("-") != 2:
+                    errores += "Formato de fecha de entrada no valido. Ejemplo: 01-01-2023"
+                    break
+                if fecha_salida.count("-") == 2:
+                    encontrado += 1
+                elif fecha_salida.count("-") != 2:
+                    errores += "Formato de fecha de salida no valido. Ejemplo: 01-01-2023"
+                    break
                 if item["fecha"] == fecha_entrada:
                     encontrado += 1
                 elif item["fecha"] != fecha_entrada:
@@ -104,6 +114,16 @@ def getMoviments(request):
                 elif hora_salida > "23:59":
                     errores += "La hora no es valida"
                     break
+                if hora_entrada.count(":") == 1:
+                    encontrado += 1
+                elif hora_entrada.count(":") != 1:
+                    errores += "La hora de entrada no es valida. Ejemplo: 07:00 y debe ser en hora militar"
+                    break
+                if hora_salida.count(":") == 1:
+                    encontrado += 1
+                elif hora_salida.count(":") != 1:
+                    errores += "La hora de salida no es valida. Ejemplo: 07:00 y debe ser en hora militar"
+                    break
                 if sentido == "ENTRADA" or sentido == "SALIDA":
                     encontrado += 1
                 elif sentido != "ENTRADA" and sentido != "SALIDA":
@@ -112,7 +132,7 @@ def getMoviments(request):
 
         except Exception as e:
             return JsonResponse({"data": "El empleado no se encuentra autorizado"})
-        if errores != "" and encontrado != 8:
+        if errores != "" and encontrado != 12:
             return JsonResponse({"data": errores})
         moviments = Moviment.objects.create(fecha_entrada = fecha_entrada, fecha_salida = fecha_salida, hora_entrada = hora_entrada,
                                             hora_salida = hora_salida, sentido = sentido, id_empleado = encontrar)
