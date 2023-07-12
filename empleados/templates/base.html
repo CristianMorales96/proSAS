@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    {% load static %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{%block title%} {% endblock %}</title>
@@ -10,7 +11,9 @@
       integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="{% static 'css/gestionPersonal.css' %}">
   </head>
+
   <body>
     <nav class="navbar navbar-expand-lg bg-info">
         <div class="container-fluid">
@@ -42,5 +45,6 @@
       integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
       crossorigin="anonymous"
     ></script>
+    <script src="{% static 'js/gestionPersonal.js' %}"></script>
   </body>
 </html>

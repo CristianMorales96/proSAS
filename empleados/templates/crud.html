@@ -42,6 +42,7 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Nombres</th>
                         <th>Apellidos</th>
                         <th>Tipo de documento</th>
@@ -52,12 +53,13 @@
                 <tbody>
                     {% for s in Staff %}
                     <tr>
+                        <td>{{forloop.counter}}</td>
                         <td>{{s.nombres}}</td>
                         <td>{{s.apellidos}}</td>
                         <td>{{s.tipo_documento}}</td>
                         <td>{{s.numero_documento}}</td>
                         <td><a href="edicionPersonal/{{s.numero_documento}}" class="btn btn-info">Editar</a></td>
-                        <td><a href="eliminarPersonal/{{s.numero_documento}}" class="btn btn-danger">Eliminar</a></td>
+                        <td><a href="eliminarPersonal/{{s.numero_documento}}" class="btn btn-danger btnEliminacion">Eliminar</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
