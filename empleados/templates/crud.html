@@ -1,0 +1,70 @@
+{% extends './base.html' %}
+
+{%block title%} Personnel management {% endblock %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <h2>Gestion de personal</h2>
+        <div class="card">
+            <div class="card-body">
+                <form action="/registrarPersonal/" method="POST">{% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" id="txtnombrePersonal" name="txtnombrePersonal" class="form-control"
+                            placeholder="Nombre" minlength="1" maxlength="20" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="txtapellidoPersonal" name="txtapellidoPersonal" class="form-control"
+                            placeholder="Apellido" minlength="1" maxlength="20" required>
+                    </div>
+                    <div class="form-group">
+                        <select name="txttipoDocumentoPersonal" id="txttipoDocumentoPersonal">
+                                <option value="C.C">Cedula</option>
+                                <option value="T.I">Tarjeta de identidad</option>
+                                <option value="T.E">Cedula de extranjeria</option>
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="txtnumeroDocumentoPersonal" name="txtnumeroDocumentoPersonal" class="form-control"
+                            placeholder="Numero de documento" minlength="1" maxlength="30" required>
+                    </div>
+                    <div class="form group">
+                        <button type="submit" class="btn btn-success btn-block text-white">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-8 col-xl-8">
+        <h1>Listado de personal</h1>
+        <div class="table-responsive py-2">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Tipo de documento</th>
+                        <th>N° documento</th>
+                        <th colspan="2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in Staff %}
+                    <tr>
+                        <td>{{s.nombres}}</td>
+                        <td>{{s.apellidos}}</td>
+                        <td>{{s.tipo_documento}}</td>
+                        <td>{{s.numero_documento}}</td>
+                        <td><a href="edicionPersonal/{{s.numero_documento}}" class="btn btn-info">Editar</a></td>
+                        <td><a href="eliminarPersonal/{{s.numero_documento}}" class="btn btn-danger">Eliminar</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
