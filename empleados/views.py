@@ -166,6 +166,32 @@ def registrarAutorization(request):
 
 
 def edicionAutorizacion(request, id):
+    print("probando")
     autorization = Autorization.objects.get(id=id)
+    print(autorization)
     return render(request, "edicionAutorizacion.html", {"autorization": autorization})
+
+def editarAutorizacion(request):
+    hora_inicio = request.POST["txtnomhoraInicio"]
+    hora_final = request.POST["txthoraFinal"]
+    fecha = request.POST["txtfecha"]
+    id_empleado = request.POST["txtidEmpleado"]
+    id = request.POST["id"]
+    staff = Staff.objects.get(id=id_empleado)
+
+    autorization = Autorization.objects.get(id=id)
+    autorization.hora_inicio = hora_inicio
+    autorization.hora_final = hora_final
+    autorization.fecha = fecha
+    autorization.id_empleado = staff
+    autorization.save()
+
+    return redirect('/autorization/')
+
+
+
+def eliminarAutorizacion(request, id):
+    autorization = Autorization.objects.get(id=id)
+    autorization.delete()
+    return redirect('/autorization/')
 

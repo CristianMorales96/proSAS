@@ -1,0 +1,42 @@
+{% extends './base.html' %}
+
+{%block title%} Edit Staff {% endblock %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col-md-4" offset-md-4>
+        <h2>Edicion de personal</h2>
+        <div class="card">
+            <div class="card-body">
+                <form action="/editarAutorizacion/" method="POST">{% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" id="txtnomhoraInicio" name="txtnomhoraInicio" value="{{autorization.hora_inicio}}"
+                            class="form-control" placeholder="Nombre" minlength="1" maxlength="20" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="txthoraFinal" name="txthoraFinal"
+                            value="{{autorization.hora_final}}" class="form-control" placeholder="Apellido" minlength="1"
+                            maxlength="20" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="txtfecha" name="txtfecha"
+                            value="{{autorization.fecha}}" class="form-control" placeholder="Tipo de documento"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="txtidEmpleado" name="txtidEmpleado"
+                            value="{{autorization.id_empleado_id}}" class="form-control" placeholder="Numero de documento"
+                            minlength="1" maxlength="30" required>
+                    </div>
+                        <input type="text" hidden id="id" name="id" value="{{autorization.id}}">
+                    <div class="form group">
+                        <button type="submit" class="btn btn-success btn-block text-white">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

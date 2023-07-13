@@ -11,5 +11,7 @@ urlpatterns = [
     path('movimients/', getMoviments, name='movimientosPersonal'),
     path('autorization/', autorizationPersonal, name='autorizacionPersonal'),
     path('registrarAutorization/', registrarAutorization, name='registrarAutorizacion'),
-    path('edicionAutorizacion/<id_empleado>', edicionAutorizacion)
+    path('autorization/edicionAutorizacion/<id>', edicionAutorizacion, name='edicionAutorizacion'),
+    path('editarAutorizacion/', editarAutorizacion, name='editarAutorizacion'),
+    path('autorization/eliminarAutorizacion/<id>', eliminarAutorizacion, name='eliminarAutorizacion')
 ]
